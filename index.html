@@ -1,0 +1,104 @@
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6558e8">
+<title>NexChat — Modern Messenger</title>
+<style>
+:root{--bg:#f4f5fb;--panel:#fff;--panel2:#f8f8fd;--text:#202136;--muted:#85869a;--line:#ececf4;--accent:#6558e8;--accent2:#8b7df6;--bubble:#f0efff;--shadow:0 18px 55px #27224a12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}button{cursor:pointer;border:0;color:inherit}.app{height:100vh;min-height:620px;max-width:1600px;margin:auto;padding:18px;display:grid;grid-template-columns:76px 330px minmax(0,1fr);gap:16px}
+.rail,.sidebar,.chat{background:var(--panel);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);min-height:0}
+.rail{display:flex;flex-direction:column;align-items:center;padding:18px 10px;gap:17px}.brand{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--accent),#a18cff);display:grid;place-items:center;color:white;font-size:22px;font-weight:800;box-shadow:0 8px 20px #6558e84a;margin-bottom:12px}.rail-btn{width:45px;height:45px;border-radius:15px;background:transparent;color:var(--muted);font-size:19px;position:relative}.rail-btn:hover,.rail-btn.active{background:var(--bubble);color:var(--accent)}.rail-spacer{flex:1}.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:750;flex:none;background:linear-gradient(135deg,#ff9a8b,#ff6a88);object-fit:cover}.avatar.small{width:37px;height:37px;font-size:12px}.avatar.big{width:52px;height:52px;font-size:17px}
+.sidebar{display:flex;flex-direction:column;overflow:hidden}.side-head{padding:25px 22px 18px}.topline{display:flex;align-items:center;justify-content:space-between}.topline h1{font-size:24px;margin:0;letter-spacing:-.7px}.icon-btn{width:38px;height:38px;border-radius:13px;background:var(--panel2);color:var(--muted);font-size:17px}.icon-btn:hover{color:var(--accent);background:var(--bubble)}.subtitle{color:var(--muted);font-size:13px;margin-top:4px}.search{margin-top:19px;position:relative}.search input{width:100%;height:44px;border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:0 14px 0 40px;outline:none;color:var(--text)}.search input:focus,.compose textarea:focus{border-color:var(--accent2)}.search span{position:absolute;left:14px;top:10px;color:var(--muted)}.filter-row{display:flex;gap:8px;margin-top:15px}.filter{padding:7px 13px;border-radius:20px;background:transparent;color:var(--muted);font-size:12px}.filter.active{background:var(--bubble);color:var(--accent);font-weight:700}.section-label{padding:5px 22px 9px;color:var(--muted);font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}.chat-list{overflow:auto;padding:0 9px 14px}.chat-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:15px;cursor:pointer;transition:.18s}.chat-item:hover{background:var(--panel2)}.chat-item.active{background:var(--bubble)}.person{min-width:0;flex:1}.person-top{display:flex;justify-content:space-between;gap:8px;align-items:center}.person-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.time{font-size:11px;color:var(--muted);white-space:nowrap}.preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:4px}.unread{background:var(--accent);color:#fff;font-size:10px;font-weight:800;min-width:19px;height:19px;border-radius:20px;display:grid;place-items:center;padding:0 5px}.online-dot{width:10px;height:10px;background:#36c98f;border:2px solid white;border-radius:50%;position:absolute;right:0;bottom:0}.avatar-wrap{position:relative}
+.chat{display:flex;flex-direction:column;overflow:hidden;position:relative}.chat-header{height:82px;display:flex;align-items:center;padding:0 25px;border-bottom:1px solid var(--line);gap:13px}.header-person{flex:1;min-width:0}.header-person strong{display:block;font-size:15px}.header-person span{font-size:12px;color:var(--muted)}.header-actions{display:flex;gap:8px}.mobile-back{display:none}.messages{flex:1;overflow-y:auto;padding:26px clamp(18px,5vw,70px);background:radial-gradient(ellipse at 50% 0%,#f4f2ff80,transparent 55%),var(--panel)}.day-divider{text-align:center;margin:5px 0 24px;color:var(--muted);font-size:11px}.day-divider span{background:var(--panel2);padding:6px 12px;border-radius:20px}.msg-row{display:flex;align-items:flex-end;gap:9px;margin:15px 0}.msg-row.mine{justify-content:flex-end}.msg-avatar{width:28px;height:28px;border-radius:50%;font-size:9px}.bubble{max-width:min(72%,510px);padding:11px 14px;border-radius:17px 17px 17px 5px;background:var(--panel2);border:1px solid var(--line);font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}.mine .bubble{background:linear-gradient(135deg,var(--accent),#8174f2);border:0;color:white;border-radius:17px 17px 5px 17px}.msg-meta{font-size:10px;color:var(--muted);margin-top:5px;text-align:right}.mine .msg-meta{color:#ffffffb8}.typing{font-size:11px;color:var(--muted);padding:0 0 12px 40px}.compose-area{padding:14px 22px 19px;border-top:1px solid var(--line);background:var(--panel)}.compose-tools{display:flex;gap:7px;margin-bottom:9px}.tool{background:transparent;color:var(--muted);font-size:17px;width:32px;height:30px;border-radius:9px}.tool:hover{background:var(--bubble);color:var(--accent)}.compose{display:flex;gap:10px;align-items:flex-end}.compose textarea{resize:none;min-height:48px;max-height:130px;flex:1;border:1px solid var(--line);border-radius:15px;padding:13px 15px;outline:none;background:var(--panel2);color:var(--text)}.send{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--accent),#8879f6);color:white;font-size:19px;box-shadow:0 7px 16px #6558e83b}.send:hover{transform:translateY(-1px)}.hint{font-size:10px;color:var(--muted);margin:7px 0 0 4px}.welcome{height:100%;display:grid;place-items:center;text-align:center;padding:30px}.welcome-icon{width:90px;height:90px;border-radius:30px;background:var(--bubble);display:grid;place-items:center;font-size:42px;margin:0 auto 18px}.welcome h2{margin:0 0 8px;font-size:24px}.welcome p{color:var(--muted);max-width:330px;font-size:13px}.primary{background:var(--accent);color:white;border-radius:12px;padding:11px 17px;font-weight:700;margin-top:12px}.modal-backdrop{position:fixed;inset:0;background:#17152c75;display:none;place-items:center;padding:18px;z-index:10}.modal-backdrop.show{display:grid}.modal{width:min(420px,100%);background:var(--panel);border-radius:22px;padding:23px;box-shadow:0 25px 80px #0003}.modal h3{margin:0 0 5px}.modal p{color:var(--muted);font-size:12px;margin:0 0 17px}.modal input{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--text);outline:none;margin:6px 0 12px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.secondary{background:var(--panel2);padding:10px 15px;border-radius:11px}.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,20px);background:#222238;color:#fff;padding:11px 17px;border-radius:12px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}.empty{padding:30px;text-align:center;color:var(--muted);font-size:13px}.theme-dark{--bg:#151622;--panel:#202231;--panel2:#292b3d;--text:#f2f2fa;--muted:#a0a2b6;--line:#34364a;--bubble:#373353;--shadow:0 18px 55px #0003}.theme-dark .messages{background:radial-gradient(ellipse at 50% 0%,#38325c55,transparent 55%),var(--panel)}.theme-dark .online-dot{border-color:var(--panel)}
+@media(max-width:900px){.app{grid-template-columns:62px 290px minmax(0,1fr);padding:10px;gap:10px}.side-head{padding:20px 16px 14px}.chat-header{padding:0 16px}.messages{padding:22px 18px}}
+@media(max-width:650px){body{overflow:hidden}.app{height:100dvh;min-height:0;padding:0;display:block}.rail{display:none}.sidebar,.chat{position:absolute;inset:0;border:0;border-radius:0;box-shadow:none}.chat{display:none}.app.chat-open .sidebar{display:none}.app.chat-open .chat{display:flex}.chat-header{height:70px}.mobile-back{display:block}.side-head{padding:22px 18px 14px}.chat-list{padding:0 10px}.messages{padding:18px 13px}.bubble{max-width:83%}.compose-area{padding:10px 12px calc(12px + env(safe-area-inset-bottom))}.header-actions .optional{display:none}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="rail">
+    <div class="brand">N</div>
+    <button class="rail-btn active" title="Chats">▤</button>
+    <button class="rail-btn" title="Contacts" onclick="showToast('Contacts view is a demo feature')">♙</button>
+    <button class="rail-btn" title="Calls" onclick="showToast('Calling needs a real-time backend')">☎</button>
+    <button class="rail-btn" title="Settings" onclick="openSettings()">⚙</button>
+    <div class="rail-spacer"></div><div class="avatar small">VP</div>
+  </aside>
+  <aside class="sidebar">
+    <div class="side-head">
+      <div class="topline"><div><h1>Messages</h1><div class="subtitle">Stay close, wherever you are.</div></div><button class="icon-btn" title="New chat" onclick="openNewChat()">＋</button></div>
+      <div class="search"><span>⌕</span><input id="searchInput" placeholder="Search conversations..." oninput="renderChats()"></div>
+      <div class="filter-row"><button class="filter active" data-filter="all" onclick="setFilter('all',this)">All chats</button><button class="filter" data-filter="unread" onclick="setFilter('unread',this)">Unread</button><button class="filter" data-filter="online" onclick="setFilter('online',this)">Online</button></div>
+    </div>
+    <div class="section-label">Recent conversations</div>
+    <div class="chat-list" id="chatList"></div>
+  </aside>
+  <main class="chat">
+    <div class="chat-header" id="chatHeader">
+      <button class="icon-btn mobile-back" onclick="backToList()">‹</button>
+      <div class="avatar-wrap"><div class="avatar big" id="headerAvatar">AM</div><span class="online-dot" id="headerDot"></span></div>
+      <div class="header-person"><strong id="headerName">Aarav Mehta</strong><span id="headerStatus">Online now</span></div>
+      <div class="header-actions"><button class="icon-btn" title="Voice call" onclick="showToast('Voice calls require a connected calling service')">☎</button><button class="icon-btn optional" title="Video call" onclick="showToast('Video calls require a connected calling service')">▣</button><button class="icon-btn" title="More options" onclick="showToast('More conversation options coming soon')">⋯</button></div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="compose-area" id="composeArea">
+      <div class="compose-tools"><button class="tool" title="Attach file" onclick="document.getElementById('fileInput').click()">＋</button><button class="tool" title="Emoji" onclick="insertEmoji()">☺</button><button class="tool" title="Share image" onclick="document.getElementById('fileInput').click()">▧</button><input type="file" id="fileInput" hidden onchange="attachFile(this)"></div>
+      <div class="compose"><textarea id="messageInput" rows="1" placeholder="Write a message..." onkeydown="handleEnter(event)" oninput="autoGrow(this)"></textarea><button class="send" onclick="sendMessage()" title="Send message">➤</button></div>
+      <div class="hint">Press Enter to send · Shift + Enter for a new line</div>
+    </div>
+  </main>
+</div>
+<div class="modal-backdrop" id="newChatModal" onclick="if(event.target===this)closeModal()"><div class="modal"><h3>Start a conversation</h3><p>Add a contact to your NexChat demo.</p><input id="newName" placeholder="Contact name"><input id="newMessage" placeholder="Optional first message"><div class="modal-actions"><button class="secondary" onclick="closeModal()">Cancel</button><button class="primary" onclick="createChat()">Create chat</button></div></div></div>
+<div class="modal-backdrop" id="settingsModal" onclick="if(event.target===this)closeSettings()"><div class="modal"><h3>Appearance</h3><p>Choose how NexChat looks on this device.</p><button class="secondary" onclick="toggleTheme()">Switch light / dark theme</button><div class="modal-actions"><button class="primary" onclick="closeSettings()">Done</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const starterChats=[
+{id:1,name:"Aarav Mehta",initials:"AM",color:"linear-gradient(135deg,#ff9a8b,#ff6a88)",online:true,unread:2,time:"09:42",messages:[{text:"Hey! How is your new project going?",mine:false,time:"09:35"},{text:"It's going really well. Working on the chat interface now.",mine:true,time:"09:37"},{text:"That sounds exciting! The design looks clean.",mine:false,time:"09:42"}]},
+{id:2,name:"Priya Sharma",initials:"PS",color:"linear-gradient(135deg,#65d6ce,#36a6b8)",online:true,unread:0,time:"Yesterday",messages:[{text:"Don't forget our meeting tomorrow 😊",mine:false,time:"Yesterday"},{text:"Sure, I'll be there!",mine:true,time:"Yesterday"}]},
+{id:3,name:"Rahul Verma",initials:"RV",color:"linear-gradient(135deg,#f6c66d,#e58a47)",online:false,unread:0,time:"Yesterday",messages:[{text:"I sent you the project files.",mine:false,time:"Yesterday"},{text:"Received, thanks!",mine:true,time:"Yesterday"}]},
+{id:4,name:"Design Team",initials:"DT",color:"linear-gradient(135deg,#9c8cf5,#6558e8)",online:true,unread:4,time:"Mon",group:true,messages:[{text:"New home screen concepts are ready for review.",mine:false,time:"Mon"},{text:"These look great. Let's discuss the details.",mine:true,time:"Mon"}]},
+{id:5,name:"Neha Gupta",initials:"NG",color:"linear-gradient(135deg,#f08bc1,#b46ee5)",online:false,unread:0,time:"Sun",messages:[{text:"Thank you for your help today!",mine:false,time:"Sun"}]},
+{id:6,name:"Karan Singh",initials:"KS",color:"linear-gradient(135deg,#6aa8f5,#5267d9)",online:false,unread:0,time:"Sat",messages:[{text:"See you soon!",mine:false,time:"Sat"}]}
+];
+let chats=JSON.parse(localStorage.getItem("nexchat_chats")||"null")||starterChats;
+let activeId=1,filter="all";
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("nexchat_chats",JSON.stringify(chats))}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function initials(name){return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("").toUpperCase()}
+function activeChat(){return chats.find(c=>c.id===activeId)}
+function renderChats(){
+ const q=$('searchInput').value.toLowerCase();let list=chats.filter(c=>c.name.toLowerCase().includes(q)&&(filter==='all'||(filter==='unread'&&c.unread)||(filter==='online'&&c.online)));
+ $('chatList').innerHTML=list.length?list.map(c=>{let last=c.messages[c.messages.length-1];return `<div class="chat-item ${c.id===activeId?'active':''}" onclick="selectChat(${c.id})"><div class="avatar-wrap"><div class="avatar" style="background:${c.color}">${escapeHTML(c.initials)}</div>${c.online?'<span class="online-dot"></span>':''}</div><div class="person"><div class="person-top"><span class="person-name">${escapeHTML(c.name)}</span><span class="time">${escapeHTML(c.time||'')}</span></div><div class="person-top"><div class="preview">${last?(last.mine?'You: ':'')+escapeHTML(last.text):'No messages yet'}</div>${c.unread?`<span class="unread">${c.unread}</span>`:''}</div></div></div>`}).join(''):'<div class="empty">No conversations found.</div>';
+}
+function selectChat(id){activeId=id;let c=activeChat();c.unread=0;renderChats();renderHeader();renderMessages();$('app').classList.add('chat-open');save()}
+function renderHeader(){let c=activeChat();if(!c)return;$('headerAvatar').textContent=c.initials;$('headerAvatar').style.background=c.color;$('headerName').textContent=c.name;$('headerStatus').textContent=c.online?'Online now': 'Last seen recently';$('headerDot').style.display=c.online?'block':'none'}
+function renderMessages(){let c=activeChat();if(!c)return;let box=$('messages');box.innerHTML='<div class="day-divider"><span>Today</span></div>'+c.messages.map(m=>`<div class="msg-row ${m.mine?'mine':''}">${m.mine?'':`<div class="avatar msg-avatar" style="background:${c.color}">${c.initials}</div>`}<div><div class="bubble">${escapeHTML(m.text)}</div><div class="msg-meta">${escapeHTML(m.time||'Now')}${m.mine?' · ✓✓':''}</div></div></div>`).join('');box.scrollTop=box.scrollHeight}
+function sendMessage(){let input=$('messageInput'),text=input.value.trim();if(!text)return;let c=activeChat();if(!c)return;let now=new Date();let time=now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});c.messages.push({text,mine:true,time});c.time=time;input.value='';input.style.height='48px';renderMessages();renderChats();save()}
+function handleEnter(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage()}}
+function autoGrow(el){el.style.height='48px';el.style.height=Math.min(el.scrollHeight,130)+'px'}
+function setFilter(value,el){filter=value;document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderChats()}
+function openNewChat(){$('newChatModal').classList.add('show');$('newName').focus()}
+function closeModal(){$('newChatModal').classList.remove('show');$('newName').value='';$('newMessage').value=''}
+function createChat(){let name=$('newName').value.trim();if(!name){showToast('Please enter a contact name');return}let id=Date.now(),c={id,name,initials:initials(name),color:['linear-gradient(135deg,#65d6ce,#36a6b8)','linear-gradient(135deg,#9c8cf5,#6558e8)','linear-gradient(135deg,#f08bc1,#b46ee5)'][chats.length%3],online:false,unread:0,time:'Now',messages:[]};let first=$('newMessage').value.trim();if(first)c.messages.push({text:first,mine:true,time:'Now'});chats.unshift(c);save();closeModal();selectChat(id);showToast('Conversation created')}
+function backToList(){$('app').classList.remove('chat-open')}
+function insertEmoji(){let el=$('messageInput');el.value+=' 😊';el.focus();autoGrow(el)}
+function attachFile(input){if(input.files&&input.files[0]){showToast('Selected: '+input.files[0].name+' · File transfer needs a backend');input.value=''}}
+function openSettings(){$('settingsModal').classList.add('show')}
+function closeSettings(){$('settingsModal').classList.remove('show')}
+function toggleTheme(){document.body.classList.toggle('theme-dark');localStorage.setItem('nexchat_dark',document.body.classList.contains('theme-dark'))}
+function showToast(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2500)}
+if(localStorage.getItem('nexchat_dark')==='true')document.body.classList.add('theme-dark');
+renderChats();selectChat(1);
+</script>
+</body>
+</html>'''
+
+path = Path("/mnt/data/nexchat-messenger.html")
+path.write_text(html, encoding="utf-8")
+print(f"Created {path} ({path.stat().st_size:,} bytes)")
